@@ -1,0 +1,11 @@
+{
+  "version": "0.3.0",
+  "notes": "Primer release con autoupdate.",
+  "pub_date": "2026-04-20T00:00:00Z",
+  "platforms": {
+    "windows-x86_64": {
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVUaGRnTmNuUXpWZS9yZC9UMTQyZlBzeTl2RHdMekpnNm8zYzJEU1h0UC9LaTEzaUNJQi9nUTNFYk9laDV5dmZNYmgxQ1l0WFFrYmpGYzYyN01adVlOY0t2VjJMSmpEMkFVPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzc2NzI2MDkwCWZpbGU6dGF1bnRlcl8wLjIuMF94NjRfZW4tVVMubXNpCkN4NjhMZXVOZ3lLVU0xbERXeWZaU1RVSlhsMnI5YnpGQnJlemdrUkNDeDM1aG5CNVhnbEplM3d0M01kd3JkL0hYbmt0ZHJ1VXg0NkJZc2MwaWxJYUNBPT0K",
+      "url": "https://github.com/Tomate-soft/taunter/releases/download/0.3.0/taunter_0.3.0_x64_en-US.msi"
+    }
+  }
+}
