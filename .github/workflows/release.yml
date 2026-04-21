@@ -28,14 +28,32 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
-      - name: Create tag in public repo
+      - name: Create release commit in public repo
         shell: pwsh
         env:
           GH_PAT: ${{ secrets.GH_PAT }}
         run: |
           git clone https://x-access-token:$env:GH_PAT@github.com/Tomate-soft/taunter.git public-repo
           cd public-repo
+          git config user.email "github-actions@github.com"
+          git config user.name "GitHub Actions"
+
+          New-Item -ItemType Directory -Force -Path "changelog"
+
+          $date = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
+          $content = @"
+          version: ${{ github.ref_name }}
+          date: $date
+          commit: ${{ github.sha }}
+          repository: ${{ github.repository }}
+          actor: ${{ github.actor }}
+          "@
+          Set-Content -Path "changelog/${{ github.ref_name }}.md" -Value $content
+
+          git add .
+          git commit -m "release: ${{ github.ref_name }}"
           git tag ${{ github.ref_name }}
+          git push origin main
           git push origin ${{ github.ref_name }}
 
       - name: Build Tauri app
