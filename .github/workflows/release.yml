@@ -28,7 +28,7 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
-      - name: Create release commit in public repo
+      - name: Create release in public repo
         shell: pwsh
         env:
           GH_PAT: ${{ secrets.GH_PAT }}
@@ -52,9 +52,26 @@ jobs:
 
           git add .
           git commit -m "release: ${{ github.ref_name }}"
-          git tag ${{ github.ref_name }}
           git push origin main
+
+          $sha = git rev-parse HEAD
+          git tag ${{ github.ref_name }} $sha
           git push origin ${{ github.ref_name }}
+
+          $headers = @{
+            Authorization = "Bearer $env:GH_PAT"
+            Accept = "application/vnd.github+json"
+          }
+          $body = @{
+            tag_name = "${{ github.ref_name }}"
+            target_commitish = $sha
+            name = "${{ github.ref_name }}"
+            body = "Nueva versión disponible."
+            draft = $false
+            prerelease = $false
+          } | ConvertTo-Json
+
+          Invoke-RestMethod -Uri "https://api.github.com/repos/Tomate-soft/taunter/releases" -Method Post -Headers $headers -Body $body -ContentType "application/json"
 
       - name: Build Tauri app
         uses: tauri-apps/tauri-action@v0
