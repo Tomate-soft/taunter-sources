@@ -28,14 +28,15 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
-      - name: Debug key
+      - name: Create tag in public repo
         shell: pwsh
         env:
-          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+          GH_PAT: ${{ secrets.GH_PAT }}
         run: |
-          echo "Key length: $($env:TAURI_SIGNING_PRIVATE_KEY.Length)"
-          $decoded = [System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String($env:TAURI_SIGNING_PRIVATE_KEY))
-          echo "Decoded first line: $($decoded.Split("`n")[0])"
+          git clone https://x-access-token:$env:GH_PAT@github.com/Tomate-soft/taunter.git public-repo
+          cd public-repo
+          git tag ${{ github.ref_name }}
+          git push origin ${{ github.ref_name }}
 
       - name: Build Tauri app
         uses: tauri-apps/tauri-action@v0
