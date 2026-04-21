@@ -28,6 +28,14 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
+      - name: Update version in tauri.conf.json
+        shell: pwsh
+        run: |
+          $version = "${{ github.ref_name }}" -replace 'v', ''
+          $config = Get-Content "src-tauri/tauri.conf.json" | ConvertFrom-Json
+          $config.version = $version
+          $config | ConvertTo-Json -Depth 10 | Set-Content "src-tauri/tauri.conf.json"
+
       - name: Create release in public repo
         shell: pwsh
         env:
