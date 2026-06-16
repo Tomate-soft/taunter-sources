@@ -1,0 +1,137 @@
+.periodsContainer {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: var(--spacing-24);
+  padding-top: 15px;
+}
+
+.periodBlock {
+  background-color: var(--surface-space-gray-card);
+  padding: var(--spacing-20);
+  border-radius: var(--radius-cards);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: var(--spacing-16);
+  align-items: end;
+  transition: transform 0.2s ease;
+  border: 1px solid rgba(255, 255, 255, 0.03);
+  position: relative;
+  overflow: visible;
+}
+
+.dayBadge {
+  position: absolute;
+  top: -10px;
+  left: 16px;
+  background: var(--color-interactive-blue);
+  color: var(--color-cloud-white);
+  padding: 4px 14px;
+  font-size: 11px;
+  font-weight: var(--font-weight-bold);
+  border-radius: 20px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  z-index: 10;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+@keyframes shimmer {
+  0% { background-position: -468px 0; }
+  100% { background-position: 468px 0; }
+}
+
+.skeletonBlock {
+  background-color: var(--surface-space-gray-card);
+  padding: var(--spacing-20);
+  border-radius: var(--radius-cards);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-16);
+  position: relative;
+  min-height: 180px;
+}
+
+.skeletonBadge, .skeletonLabel, .skeletonInput {
+  background: linear-gradient(to right, #2a2a2c 8%, #3a3a3c 18%, #2a2a2c 33%);
+  background-size: 800px 104px;
+  animation: shimmer 1.5s linear infinite;
+  border-radius: 4px;
+}
+
+.skeletonBadge {
+  position: absolute;
+  top: -10px;
+  left: 16px;
+  width: 80px;
+  height: 20px;
+  border-radius: 20px;
+}
+
+.skeletonLabel {
+  height: 12px;
+  width: 60%;
+  margin-bottom: 8px;
+}
+
+.skeletonInput {
+  height: 40px;
+  width: 100%;
+}
+
+.periodBlock.active {
+  border-color: var(--color-vivid-blue);
+  box-shadow: 0 0 0 2px rgba(41, 151, 255, 0.3), 0 20px 40px rgba(0, 0, 0, 0.4);
+  transform: scale(1.02);
+  z-index: 5;
+}
+
+.periodBlock.active .dayBadge {
+  background: var(--color-cloud-white);
+  color: var(--color-vivid-blue);
+  transform: scale(1.1) translateY(-2px);
+}
+
+.periodBlock label {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-4);
+  width: 100%;
+}
+
+.periodBlock label span {
+  font-size: var(--text-caption);
+  color: var(--color-cloud-white);
+  font-weight: var(--font-weight-semibold);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  opacity: 0.8;
+}
+
+.periodBlock input[readOnly] {
+  background-color: var(--surface-deep-graphite-surface);
+  border: 1px solid var(--color-storm-gray);
+  color: var(--color-cloud-white);
+  padding: 10px 14px;
+  border-radius: var(--radius-standard);
+  font-size: var(--text-body-sm);
+  font-weight: var(--font-weight-semibold);
+}
+
+.inputWrapper {
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+.currencySymbol {
+  position: absolute;
+  left: 10px;
+  color: #888;
+}
+
+.currencyInput {
+  padding-left: 25px;
+  width: 100%;
+
+}

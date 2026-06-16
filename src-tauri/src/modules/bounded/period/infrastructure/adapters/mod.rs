@@ -1,0 +1,3 @@
+pub mod period_repository_http_adapter;
+
+pub use period_repository_http_adapter::PeriodRepositoryHttpAdapter;

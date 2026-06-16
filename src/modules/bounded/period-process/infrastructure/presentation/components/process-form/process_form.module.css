@@ -1,0 +1,66 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-20);
+  width: 100%;
+  height: auto;
+}
+
+.splitLayout {
+  display: grid;
+  grid-template-columns: 1fr 350px;
+  gap: var(--spacing-20);
+  height: auto;
+}
+
+.leftPanel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-20);
+  overflow-y: auto;
+  padding-right: var(--spacing-12);
+  height: 100%;
+}
+
+.rightPanel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-20);
+  height: 100%;
+  overflow-y: auto;
+}
+
+/* Custom scrollbar for leftPanel */
+.leftPanel::-webkit-scrollbar {
+  width: 6px;
+}
+
+.leftPanel::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.leftPanel::-webkit-scrollbar-thumb {
+  background: var(--color-storm-gray);
+  border-radius: 10px;
+}
+
+.leftPanel::-webkit-scrollbar-thumb:hover {
+  background: var(--color-cool-gray);
+}
+
+.actionsContainer {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--element-gap);
+  margin-top: var(--spacing-20);
+}
+
+@media (max-width: 1024px) {
+  .splitLayout {
+    grid-template-columns: 1fr;
+  }
+  .rightPanel {
+    position: static;
+  }
+}
