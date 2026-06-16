@@ -12,9 +12,9 @@ interface ObjetiveFormSectionProps {
     currentEditableTotal: number;
     periods: Period[];
 }
-export default function ObjetiveFormSection({ objectiveAmount, isObjectiveInvalid, isSumExceeding, handleObjectiveChange, currentEditableTotal, periods }: ObjetiveFormSectionProps){
+export default function ObjetiveFormSection({ objectiveAmount, isObjectiveInvalid, isSumExceeding, handleObjectiveChange, currentEditableTotal/* , periods */ }: ObjetiveFormSectionProps){
     
-    const formatCurrency = (val: number) => new Intl.NumberFormat('es-MX', { style: 'currency', currency: 'MXN' }).format(val);
+    // const formatCurrency = (val: number) => new Intl.NumberFormat('es-MX', { style: 'currency', currency: 'MXN' }).format(val);
     
     return (
         <section className={styles.totalContainer}>
