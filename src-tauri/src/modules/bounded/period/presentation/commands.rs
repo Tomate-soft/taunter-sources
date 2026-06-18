@@ -7,11 +7,11 @@ use crate::modules::bounded::period::{
 };
 
 fn get_period_api_base_url() -> String {
-	std::env::var("PERIOD_API_BASE_URL").unwrap_or_else(|_| "none".to_string())
+	std::env::var("PERIOD_API_BASE_URL").unwrap_or_else(|_| "https://internal.api.tomatesoft.com".to_string())
 }
 
 fn get_taunter_api_base_url() -> String {
-	std::env::var("TAUNTER_API_BASE_URL").unwrap_or_else(|_| "none".to_string())
+	std::env::var("TAUNTER_API_BASE_URL").unwrap_or_else(|_| "https://internal.gateway.tomatesoft.com/api/v1".to_string())
 }
 
 pub fn get_period_by_id_command(id: String) -> Result<OperatingPeriod, String> {
