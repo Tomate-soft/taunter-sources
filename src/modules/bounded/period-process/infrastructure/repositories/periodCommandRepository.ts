@@ -6,9 +6,12 @@ export const periodCommandRepository = () => {
     return {
         findByMonth: async (month: string): Promise<Period[]> => {
             try {
-                return await invoke<Period[]>(PeriodCommand.GET_MONTHLY, { month });
+                console.log("[periodCommandRepository] findByMonth: invoking Tauri command for", month);
+                const result = await invoke<Period[]>(PeriodCommand.GET_MONTHLY, { month });
+                console.log("[periodCommandRepository] findByMonth: invoke returned", result?.length, "periods");
+                return result;
             } catch (error) {
-                    console.error("Error fetching periods:", error);
+                    console.error("[periodCommandRepository] ERROR invoking Tauri command:", error);
             throw new Error("Failed to fetch periods");
         }
     },

@@ -7,12 +7,15 @@ export default function periodUseCases (service: PeriodDomainService): PeriodApp
     return {
         getMonthly: async (month: string) => {
                 if (!month) month = service.getCurrentMonth();
+                console.log("[periodUseCases] getMonthly: calling service.getMonthly for", month);
                 const periods = await service.getMonthly(month);
-                // hay que sacar un mapper externo para hacer esto
-                return Promise.all(periods.map(async (period) => ({
+                console.log("[periodUseCases] getMonthly: got", periods?.length, "periods from service");
+                const result = await Promise.all(periods.map(async (period) => ({
                     ...period,
                     created_at: await service.formatShortDate(new Date(period.created_at))
                 })));
+                console.log("[periodUseCases] getMonthly: returning", result?.length, "periods");
+                return result;
         },
 
         postProcess: async (periods: Period[]) => {

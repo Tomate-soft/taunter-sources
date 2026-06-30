@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { usePeriodStore } from "../store/usePeriodStore";
 import { Period } from "../../../core/domain/entities/Period";
 import { useDIStore } from "../../../../../system/di-store";
@@ -23,15 +23,26 @@ export const useProcess = (): UseProcess => {
 
     const handleMonthChange = async (month: string) => {
         setSelectedMonth(month);
+        setIsLoading(true);
+        try {
+            console.log("[usePeriodProcess] handleMonthChange: fetching month", month);
+            const monthlyPeriods = await __getMonthlyPeriods(month);
+            console.log("[usePeriodProcess] handleMonthChange: received", monthlyPeriods?.length, "periods");
+            if (monthlyPeriods && monthlyPeriods.length > 0) {
+                console.log("[usePeriodProcess] first period sample:", JSON.stringify(monthlyPeriods[0], null, 2));
+            }
+            setPeriods(monthlyPeriods);
+        } catch (error) {
+            console.error("[usePeriodProcess] handleMonthChange ERROR:", error);
+        } finally {
+            setIsLoading(false);
+        }
     };
     
 
     const postProcessing = async (fetchedPeriods: Period[]) => {
         console.log("Post-processing fetched periods:", fetchedPeriods);
         await __postProcessPeriods(fetchedPeriods);
-        
-        
-        // return fetchedPeriods; 
     }
 
     const getMonthly = async (month?: string) => {
@@ -43,10 +54,6 @@ export const useProcess = (): UseProcess => {
             setIsLoading(false);
         }
     };
-
-    useEffect(() => {
-        getMonthly(selectedMonth || "");
-    }, [selectedMonth]);
 
     
     return { getMonthly, periods, selectedMonth, handleMonthChange, isLoading, postProcessing };

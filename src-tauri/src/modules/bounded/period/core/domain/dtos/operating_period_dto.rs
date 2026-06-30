@@ -54,7 +54,7 @@ pub struct OperationalClosureDto {
 	pub cancellations_total_amount: f64,
 	#[serde(rename = "balanceSheet")]
 	pub balance_sheet: BalanceSheetDto,
-	#[serde(rename = "_id")]
+	#[serde(alias = "_id")]
 	pub id: Option<String>,
 }
 
@@ -162,15 +162,31 @@ pub struct AccountDto {
 }
 
 
+fn deserialize_bool_from_string<'de, D>(deserializer: D) -> Result<bool, D::Error>
+where
+	D: serde::Deserializer<'de>,
+{
+	match serde_json::Value::deserialize(deserializer)? {
+		serde_json::Value::Bool(b) => Ok(b),
+		serde_json::Value::String(s) => match s.as_str() {
+			"true" | "1" => Ok(true),
+			"false" | "0" => Ok(false),
+			_ => Err(serde::de::Error::custom(format!("invalid boolean string: {}", s))),
+		},
+		other => Err(serde::de::Error::custom(format!("expected bool or string, got {other:?}"))),
+	}
+}
+
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct OperatingPeriodDto {
-	#[serde(rename = "_id")]
 	pub id: String,
+	#[serde(deserialize_with = "deserialize_bool_from_string")]
 	pub status: bool,
 	pub created_at: String,
-	#[serde(rename = "operationalClousure")]
+	#[serde(rename = "operationalClosure", alias = "operationalClousure")]
 	pub operational_closure: Option<OperationalClosureDto>,
+	#[serde(default)]
 	pub invoiced_accounts: Vec<AccountDto>,
 	pub total_invoiced_accounts: u32,
 	pub highest_folio_number: u64,
@@ -229,6 +245,7 @@ pub struct TaunterClosureDto {
 	pub number_of_cancellations: u32,
 	pub cancellations_total_amount: f64,
 	pub balance_sheet: TaunterBalanceSheetDto,
+	#[serde(skip_serializing_if = "Option::is_none")]
 	pub id: Option<String>,
 }
 
@@ -306,11 +323,18 @@ impl From<OperationalClosure> for TaunterClosureDto {
 
 impl From<OperatingPeriod> for TaunterPeriodDto {
 	fn from(p: OperatingPeriod) -> Self {
+		let period_id = p.id.value().to_string();
 		Self {
-			id: p.id.value().to_string(),
+			id: period_id.clone(),
 			status: p.status.value(),
 			created_at: p.created_at.value().to_string(),
-			operational_closure: p.operational_closure.map(|c| c.into()),
+			operational_closure: p.operational_closure.map(|c| {
+				let mut dto: TaunterClosureDto = c.into();
+				if dto.id.is_none() {
+					dto.id = Some(period_id.clone());
+				}
+				dto
+			}),
 			invoiced_accounts: p.invoiced_accounts.into_iter().map(|a| a.into()).collect(),
 			total_invoiced_accounts: p.total_invoiced_accounts,
 			highest_folio_number: p.highest_folio_number,

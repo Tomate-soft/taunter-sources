@@ -46,19 +46,41 @@ impl PeriodHttpClient for ReqwestPeriodHttpClient {
 
 		response.json::<OperatingPeriodDto>().map_err(|_| PeriodError::Unknown)
 	}
-
 	fn get_monthly_periods(&self, month: String) -> Result<Vec<OperatingPeriodDto>, PeriodError> {
-		let url = format!("{}/period-stats/by-month?month={}", self.base_url.trim_end_matches('/'), month);
+		let url = format!("{}/read-taunter/periods?month={}", self.base_url.trim_end_matches('/'), month);
 		println!("[period_http_client] GET {}", url);
-		let response = self.client.get(url).send().map_err(|_| PeriodError::Unknown)?;
-		println!("[period_http_client] status={}", response.status());
-		if !response.status().is_success() {
+		let response = match self.client.get(&url).send() {
+			Ok(resp) => resp,
+			Err(e) => {
+				eprintln!("[period_http_client] REQUEST FAILED: {}", e);
+				return Err(PeriodError::Unknown);
+			}
+		};
+		let status = response.status();
+		println!("[period_http_client] status={}", status);
+		if !status.is_success() {
+			eprintln!("[period_http_client] HTTP ERROR: {} for URL: {}", status, url);
 			return Err(PeriodError::Unknown);
 		}
-		let response_dto = response.json::<PeriodsResponseDto>().map_err(|_| PeriodError::Unknown)?;
-		println!("[period_http_client] result={:?}", response_dto.data);
+		let response_text = match response.text() {
+			Ok(text) => text,
+			Err(e) => {
+				eprintln!("[period_http_client] FAILED TO READ RESPONSE BODY: {}", e);
+				return Err(PeriodError::Unknown);
+			}
+		};
+		println!("[period_http_client] raw body (first 500 chars): {}", &response_text[..response_text.len().min(500)]);
+		let response_dto: PeriodsResponseDto = match serde_json::from_str(&response_text) {
+			Ok(dto) => dto,
+			Err(e) => {
+				eprintln!("[period_http_client] JSON DESERIALIZATION ERROR: {}", e);
+				eprintln!("[period_http_client] failed body (first 1000 chars): {}", &response_text[..response_text.len().min(1000)]);
+				return Err(PeriodError::Unknown);
+			}
+		};
+		println!("[period_http_client] result count={}", response_dto.data.len());
 		for item in &response_dto.data {
-			println!("[period_http_client] id={} status={}", item.id, item.status);
+			println!("[period_http_client] id={} status={:?}", item.id, item.status);
 		}
 		Ok(response_dto.data)
 	}

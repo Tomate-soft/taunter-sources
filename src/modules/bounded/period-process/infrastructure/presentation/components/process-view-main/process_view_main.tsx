@@ -132,7 +132,20 @@ export const ProcessViewMain = (props: ProcessViewMainProps) => {
         </div>
       </aside>
       <section className={styles.workArea}>
-        {isLoading ? (
+        {!selectedMonth ? (
+          <div className={styles.welcomeView}>
+            <div className={styles.welcomeContent}>
+              <div className={styles.welcomeIcon}>📋</div>
+              <h2 className={styles.welcomeTitle}>Proceso de Recuento</h2>
+              <p className={styles.welcomeText}>
+                Selecciona un mes en el panel lateral para comenzar.
+              </p>
+              <p className={styles.welcomeHint}>
+                Podrás revisar y ajustar los montos de cierre operativo de cada día antes de procesarlos.
+              </p>
+            </div>
+          </div>
+        ) : isLoading ? (
             <PeriodSkeletonGrid />
         ) : (
             <ProcessForm 
@@ -140,6 +153,7 @@ export const ProcessViewMain = (props: ProcessViewMainProps) => {
                 handleClosureChange={handleClosureChange}
                 currentEditableTotal={currentEditableTotal}
                 activePeriod={activePeriod}
+                onSelectPeriod={scrollToDay}
             />
         )}
       </section>

@@ -7,9 +7,10 @@ interface PeriodDetailsFormProps {
     handleClosureChange: (index: number, field: string, value: number) => void;
     currentEditableTotal: number;
     activePeriod?: number | null;
+    onSelectPeriod?: (index: number) => void;
 }
 
-export default function PeriodDetailsForm({ editablePeriods, handleClosureChange, currentEditableTotal, activePeriod }: PeriodDetailsFormProps) {
+export default function PeriodDetailsForm({ editablePeriods, handleClosureChange, currentEditableTotal, activePeriod, onSelectPeriod }: PeriodDetailsFormProps) {
     return (
         <section className={styles.periodsContainer}>
             {
@@ -23,7 +24,7 @@ export default function PeriodDetailsForm({ editablePeriods, handleClosureChange
                     const invoicedTotal = (period?.invoiced_accounts || []).reduce((acc, account) => acc + (parseFloat(account.check_total) || 0), 0);
 
                     return (
-                    <div key={period?.id || index} id={`period-${index}`} className={`${styles.periodBlock} ${isActive ? styles.active : ''}`}>
+                    <div key={period?.id || index} id={`period-${index}`} className={`${styles.periodBlock} ${isActive ? styles.active : ''}`} onClick={() => onSelectPeriod?.(index)}>
                         <div className={styles.dayBadge}>
                             Día: {period?.created_at}
                         </div>

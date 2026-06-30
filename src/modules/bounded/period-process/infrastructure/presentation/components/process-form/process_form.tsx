@@ -7,9 +7,10 @@ interface ProcessFormProps {
     handleClosureChange: (index: number, field: string, value: number) => void;
     currentEditableTotal: number;
     activePeriod?: number | null;
+    onSelectPeriod?: (index: number) => void;
 }
 
-export function ProcessForm({ editablePeriods, handleClosureChange, currentEditableTotal, activePeriod }: ProcessFormProps) {
+export function ProcessForm({ editablePeriods, handleClosureChange, currentEditableTotal, activePeriod, onSelectPeriod }: ProcessFormProps) {
     return (
          <div className={styles.container}>
             <PeriodDetailsForm 
@@ -17,6 +18,7 @@ export function ProcessForm({ editablePeriods, handleClosureChange, currentEdita
                 handleClosureChange={handleClosureChange}
                 currentEditableTotal={currentEditableTotal}
                 activePeriod={activePeriod}
+                onSelectPeriod={onSelectPeriod}
             />
         </div>
     )
